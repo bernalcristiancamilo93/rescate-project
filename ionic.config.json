@@ -1,0 +1,7 @@
+{
+  "name": "rescate-project",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
