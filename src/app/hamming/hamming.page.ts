@@ -11,7 +11,24 @@ import { AlertController } from '@ionic/angular';
 export class HammingPage implements OnInit {
   // Forms
   public codificarForm: FormGroup;
-  public errorForm: FormGroup;
+  public decodificarForm: FormGroup;
+
+  // Data
+  public bitsTxData = [];
+  public bitsRxData = [];
+  public hValue = [];
+  public hammingArray = [];
+  public posHammingBits = [];
+  public posHammingBitsBinary = [];
+  public onesRx = [];
+  public onesRxBinary = [];
+  public errorPos = 0;
+  public errorPosBin = [];
+  public errorMsg = '';
+
+  // Flags
+  public isHammingTxCalculated = false;
+  public isHammingRxCalculated = false;
 
   constructor(private alertCtrl: AlertController) {}
 
@@ -19,23 +36,44 @@ export class HammingPage implements OnInit {
     this.codificarForm = new FormGroup({
       message: new FormControl(null, Validators.required),
     });
+    this.decodificarForm = new FormGroup({
+      message: new FormControl(null, [
+        Validators.required,
+        Validators.minLength(3),
+      ]),
+    });
   }
 
   // Codifica una secuencia de bits usando Hamming.
-  calculateHamming() {
-    const message = this.formatMessage(this.getRawMessage());
+  calculateTxHamming() {
+    const message = this.formatMessage(this.getRawMessage('tx'));
     const numH = this.calculateNumParityBits(message);
 
     const data = this.createDataArray(message, numH);
+    this.bitsTxData = data;
     const onesArray = this.findOnes(data);
+    this.posHammingBits = onesArray;
     const arrayH = this.calculateXOR(onesArray, numH);
+    this.hValue = arrayH;
     const finalData = this.replaceH(data, arrayH);
+    this.hammingArray = finalData;
 
-    console.log('Vector total con H:', data);
-    console.log('Posiciones de los 1:', onesArray);
-    console.log('Vector H calculado:', arrayH);
-    console.log('Vector final:', finalData);
+    this.convertDecToBin();
 
+    this.isHammingTxCalculated = true;
+
+    // console.log('Vector total con H:', data);
+    // console.log('Posiciones de los 1:', onesArray);
+    // console.log('Vector H calculado:', arrayH);
+    // console.log('Vector final:', finalData);
+  }
+
+  // Convierte el vector de 1s de Dec a Bin
+  convertDecToBin() {
+    for (const num of this.posHammingBits) {
+      this.posHammingBitsBinary.push((num >>> 0).toString(2).split(''));
+    }
+    this.posHammingBitsBinary.reverse();
   }
 
   // Crea el vector final, reemplazando las H por el valor correspondiente.
@@ -44,7 +82,7 @@ export class HammingPage implements OnInit {
     return data.map((item) => {
       if (item === 'H') {
         i++;
-        return arrayH[i-1];
+        return arrayH[i - 1];
       } else {
         return item;
       }
@@ -57,7 +95,7 @@ export class HammingPage implements OnInit {
 
     // Hace la XOR sucesiva con las posciones de todos los 1.
     for (const num of array) {
-      xor ^= (num);
+      xor ^= num;
     }
 
     // Convierte el valor de decimal a binario y lo formatea a string.
@@ -69,7 +107,7 @@ export class HammingPage implements OnInit {
       for (let i = 0; i < numH; i++) {
         value.push('0');
       }
-      for (let i = 0; i < originalSize ; i++) {
+      for (let i = 0; i < originalSize; i++) {
         value.pop();
       }
     }
@@ -122,14 +160,23 @@ export class HammingPage implements OnInit {
   }
 
   // Retorna el mensaje original.
-  getRawMessage() {
-    return this.codificarForm.get('message').value;
+  getRawMessage(data) {
+    if (data === 'tx') {
+      return this.codificarForm.get('message').value;
+    } else if (data === 'rx') {
+      return this.decodificarForm.get('message').value;
+    }
   }
 
   // Garantiza que la entrada sea un binario. Si no, emite un alert y borra lo
-  // que hay en el input.
-  checkIfBinary() {
-    const message = this.getRawMessage();
+  // que hay en el input. Hace que la info en pantalla se deje de mostrar.
+  checkIfBinary(data) {
+    if (data === 'tx') {
+      this.isHammingTxCalculated = false;
+    } else if (data === 'rx') {
+      this.isHammingRxCalculated = false;
+    }
+    const message = this.getRawMessage(data);
 
     if (!message) {
       return;
@@ -145,11 +192,56 @@ export class HammingPage implements OnInit {
           })
           .then((alertElement) => {
             alertElement.present();
-            alertElement
-              .onWillDismiss()
-              .then(() => this.codificarForm.get('message').patchValue(null));
+            alertElement.onWillDismiss().then(() => {
+              if (data === 'tx') {
+                this.codificarForm.get('message').patchValue(null);
+              } else if (data === 'rx') {
+                this.decodificarForm.get('message').patchValue(null);
+              }
+            });
           });
       }
     }
+  }
+
+  // Verifica si hay errores en la recepción
+  calculateRxHamming() {
+    this.alertCtrl
+      .create({
+        header: 'Read before continuing!',
+        message:
+          'Keep in mind that Hamming Codes only check one-bit errors!',
+        buttons: ['Okay'],
+      })
+      .then((alertElement) => {
+        alertElement.present();
+        alertElement.onDidDismiss().then(() => {
+          const message = this.formatMessage(this.getRawMessage('rx'));
+          this.bitsRxData = message;
+          const onesArray = this.findOnes(message);
+          this.onesRx = onesArray;
+          let xor;
+
+          for (const num of onesArray) {
+            xor ^= num;
+          }
+          this.errorPos = xor;
+
+          if (this.errorPos === 0) {
+            this.errorMsg = 'There was no error on transmission!';
+          } else {
+            this.errorMsg = `There is an error on bit ${this.errorPos}`;
+          }
+
+          for (const num of this.onesRx) {
+            this.onesRxBinary.push((num >>> 0).toString(2).split(''));
+          }
+          this.onesRxBinary.reverse();
+
+          this.errorPosBin = (this.errorPos >>> 0).toString(2).split('').reverse();
+
+          this.isHammingRxCalculated = true;
+        });
+      });
   }
 }
