@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button slot="icon-only" [routerLink]="['/','hamming']">
+        <ion-icon name="arrow-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Hamming Receiver</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <h2>Receiver</h2>
+        <form [formGroup]="decodificarForm">
+          <ion-item>
+            <ion-label position="floating"> Message </ion-label>
+            <ion-textarea
+              formControlName="message"
+              placeholder="Type your message"
+              autoGrow="true"
+              rows="1"
+              (ionChange)="checkIfBinary()"
+            >
+            </ion-textarea>
+          </ion-item>
+          <ion-button
+            [disabled]="!decodificarForm.valid"
+            (click)="calculateRxHamming()"
+          >
+            Check for errors
+          </ion-button>
+        </form>
+      </ion-col>
+    </ion-row>
+    <ion-row *ngIf="isHammingRxCalculated">
+      <ion-col>
+        <ion-row>
+          <ion-col> Data in receiver </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col *ngFor="let item of bitsRxData.reverse(); index as i">
+            <ion-row> </ion-row>
+            <ion-row>
+              <ion-col> {{ bitsRxData.length - i }} </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col> {{ item }} </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> Error bits </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col> {{ errorMsg }} </ion-col>
+        </ion-row>
+        <ion-row *ngIf="errorPos !== 0">
+          <ion-col>
+            <ion-row class="ion-no-margin ion-no-padding">
+              <ion-col class="ion-no-margin ion-no-padding">
+                <ion-row
+                  *ngFor="let bit of onesRx.reverse(); index as i"
+                  class="ion-no-margin ion-no-padding"
+                >
+                  <ion-col class="ion-no-margin ion-no-padding">
+                    {{ bit }} =
+                  </ion-col>
+                  <ion-col class="ion-no-margin ion-no-padding ion-text-right">
+                    {{ onesRxBinary[i] }}
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-no-margin ion-no-padding">
+              <ion-col class="ion-no-margin ion-no-padding">
+                Error place
+              </ion-col>
+              <ion-col class="ion-no-margin ion-no-padding ion-text-right">
+                {{ errorPosBin }}
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

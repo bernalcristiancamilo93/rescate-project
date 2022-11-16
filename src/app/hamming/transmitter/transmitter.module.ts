@@ -4,18 +4,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { HammingPageRoutingModule } from './hamming-routing.module';
+import { TransmitterPageRoutingModule } from './transmitter-routing.module';
 
-import { HammingPage } from './hamming.page';
+import { TransmitterPage } from './transmitter.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    HammingPageRoutingModule,
+    TransmitterPageRoutingModule,
     ReactiveFormsModule,
   ],
-  declarations: [HammingPage],
+  declarations: [TransmitterPage],
 })
-export class HammingPageModule {}
+export class TransmitterPageModule {}

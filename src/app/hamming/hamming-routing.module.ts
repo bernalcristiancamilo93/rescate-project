@@ -7,6 +7,14 @@ const routes: Routes = [
   {
     path: '',
     component: HammingPage
+  },
+  {
+    path: 'transmitter',
+    loadChildren: () => import('./transmitter/transmitter.module').then( m => m.TransmitterPageModule)
+  },
+  {
+    path: 'receiver',
+    loadChildren: () => import('./receiver/receiver.module').then( m => m.ReceiverPageModule)
   }
 ];
 
