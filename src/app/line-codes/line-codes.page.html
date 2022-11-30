@@ -1,0 +1,99 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button slot="icon-only" [routerLink]="['/','home']">
+        <ion-icon name="home-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Line Codes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <form [formGroup]="encodingForm">
+      <ion-row>
+        <ion-col>
+          <ion-row>
+            <ion-item>
+              <ion-label position="floating"> Bits stream </ion-label>
+              <ion-textarea
+                formControlName="bitStream"
+                placeholder="Type your message"
+                autoGrow="true"
+                rows="1"
+              >
+              </ion-textarea>
+            </ion-item>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <ion-button [disabled]="!encodingForm.valid">
+                Calculate
+              </ion-button>
+              <ion-button fill="outline" [disabled]="!encodingForm.valid">
+                Generate bit stream
+              </ion-button>
+              <ion-item>
+                <ion-label position="floating">
+                  Number of random bits
+                </ion-label>
+                <ion-input type="number" formControlName="numRandBits">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <ion-list>
+                <ion-item>
+                  <ion-label position="floating"> Encoding type </ion-label>
+                  <ion-select
+                    placeholder="Select encoding"
+                    formControlName="encondingType"
+                  >
+                    <ion-select-option
+                      *ngFor="let item of encoders"
+                      [value]="item.value"
+                    >
+                      {{ item.label }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating"> Last bit sent </ion-label>
+                  <ion-select
+                    placeholder="Select last bit"
+                    formControlName="lastBit"
+                  >
+                    <ion-select-option value="0"> 0 </ion-select-option>
+                    <ion-select-option value="1"> 1 </ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">
+                    Data transmission rate (bps)
+                  </ion-label>
+                  <ion-input type="number" formControlName="txRate">
+                  </ion-input>
+                </ion-item>
+                <ion-item>
+                  <ion-label position="floating">
+                    Signal amplitude (V)
+                  </ion-label>
+                  <ion-input type="number" formControlName="amplitude">
+                  </ion-input>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col> </ion-col>
+      </ion-row>
+    </form>
+  </ion-grid>
+</ion-content>

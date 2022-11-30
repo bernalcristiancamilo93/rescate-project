@@ -8,10 +8,10 @@ import { Component } from '@angular/core';
 export class HomePage {
   public pages = [
     {
-      title: 'Codificación de línea',
+      title: 'Line Coding',
       description: 'Card description',
       disabled: false,
-      url: ['/'],
+      url: ['/', 'line-codes'],
     },
     {
       title: 'Channel coding',

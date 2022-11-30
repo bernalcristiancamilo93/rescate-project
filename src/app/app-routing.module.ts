@@ -11,6 +11,10 @@ const routes: Routes = [
     loadChildren: () => import('./hamming/hamming.module').then( m => m.HammingPageModule)
   },
   {
+    path: 'line-codes',
+    loadChildren: () => import('./line-codes/line-codes.module').then( m => m.LineCodesPageModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
