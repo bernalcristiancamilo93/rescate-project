@@ -15,49 +15,12 @@
       <ion-row>
         <ion-col>
           <ion-row>
-            <ion-item>
-              <ion-label position="floating"> Bits stream </ion-label>
-              <ion-textarea
-                formControlName="bitStream"
-                placeholder="Type your message"
-                autoGrow="true"
-                rows="1"
-                (ionChange)="checkIfBinary()"
-              >
-              </ion-textarea>
-            </ion-item>
-          </ion-row>
-          <ion-row>
-            <ion-col>
-              <ion-button
-                [disabled]="!encodingForm.valid"
-                (click)="calculate()"
-              >
-                Calculate
-              </ion-button>
-              <ion-button
-                fill="outline"
-                [disabled]="!encodingForm.get('numRandBits').valid"
-                (click)="generateRandomBitStream()"
-              >
-                Generate bit stream
-              </ion-button>
-              <ion-item>
-                <ion-label position="floating">
-                  Number of random bits
-                </ion-label>
-                <ion-input type="number" formControlName="numRandBits">
-                </ion-input>
-              </ion-item>
-            </ion-col>
-          </ion-row>
-        </ion-col>
-        <ion-col>
-          <ion-row>
             <ion-col>
               <ion-list>
                 <ion-item>
-                  <ion-label position="floating"> Encoding type </ion-label>
+                  <ion-label position="floating">
+                    Encoding type (Scroll for more)
+                  </ion-label>
                   <ion-select
                     placeholder="Select encoding"
                     formControlName="encondingType"
@@ -71,7 +34,9 @@
                   </ion-select>
                 </ion-item>
                 <ion-item>
-                  <ion-label position="floating"> Last bit state sent </ion-label>
+                  <ion-label position="floating">
+                    Last bit state sent
+                  </ion-label>
                   <ion-select
                     placeholder="Select last bit state"
                     formControlName="lastBit"
@@ -112,22 +77,70 @@
             </ion-col>
           </ion-row>
         </ion-col>
+        <ion-col>
+          <ion-row>
+            <ion-col>
+              <ion-item>
+                <ion-label position="floating"> Bits stream </ion-label>
+                <ion-textarea
+                  formControlName="bitStream"
+                  placeholder="Type your message"
+                  autoGrow="true"
+                  rows="1"
+                  (ionChange)="checkIfBinary()"
+                >
+                </ion-textarea>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col>
+              <ion-button
+                fill="outline"
+                [disabled]="!encodingForm.get('numRandBits').valid"
+                (click)="generateRandomBitStream()"
+              >
+                Generate random bit stream
+              </ion-button>
+            </ion-col>
+            <ion-col>
+              <ion-item>
+                <ion-label position="floating">
+                  Number of random bits
+                </ion-label>
+                <ion-input type="number" formControlName="numRandBits">
+                </ion-input>
+              </ion-item>
+            </ion-col>
+          </ion-row>
+        </ion-col>
       </ion-row>
       <ion-row>
         <ion-col>
-          <div class="chart-container">
-            <canvas id="clockChart">{{ clockChart }}</canvas>
-          </div>
+          <ion-button [disabled]="!encodingForm.valid" (click)="calculate()">
+            Calculate
+          </ion-button>
         </ion-col>
-        <ion-col>
-          <div class="chart-container">
-            <canvas id="rawDataChart">{{ rawDataChart }}</canvas>
-          </div>
-        </ion-col>
-        <ion-col>
-          <div class="chart-container">
-            <canvas id="encodedDataChart">{{ encodedDataChart }}</canvas>
-          </div>
+      </ion-row>
+      <ion-row>
+        <ion-col size="10" offset="1">
+          <ion-row>
+            <ion-col>
+              <div class="chart-container">
+                <canvas id="clockChart">{{ clockChart }}</canvas>
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="chart-container">
+                <canvas id="rawDataChart">{{ rawDataChart }}</canvas>
+              </div>
+            </ion-col>
+            <ion-col>
+              <div class="chart-container">
+                <canvas id="encodedDataChart">{{ encodedDataChart }}</canvas>
+              </div>
+            </ion-col>
+          </ion-row>
         </ion-col>
       </ion-row>
     </form>

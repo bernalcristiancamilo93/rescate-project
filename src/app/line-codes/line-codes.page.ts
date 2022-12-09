@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AlertController } from '@ionic/angular';
 import { Chart } from 'chart.js';
-import { element } from 'protractor';
 
 @Component({
   selector: 'app-line-codes',
@@ -495,6 +494,8 @@ export class LineCodesPage implements OnInit {
           fill: false,
           stepped: true,
           pointRadius: 0,
+          borderColor: '#3880ff',
+          backgroundColor: '#4c8dff',
         },
       ],
     };
@@ -504,7 +505,6 @@ export class LineCodesPage implements OnInit {
       data,
       options: {
         responsive: true,
-        aspectRatio: 2.5,
         interaction: {
           intersect: false,
           axis: 'x',
@@ -568,6 +568,8 @@ export class LineCodesPage implements OnInit {
           fill: false,
           stepped: true,
           pointRadius: 0,
+          borderColor: '#3880ff',
+          backgroundColor: '#4c8dff',
         },
       ],
     };
@@ -577,7 +579,6 @@ export class LineCodesPage implements OnInit {
       data,
       options: {
         responsive: true,
-        aspectRatio: 2.5,
         interaction: {
           intersect: false,
           axis: 'x',
@@ -641,6 +642,8 @@ export class LineCodesPage implements OnInit {
           fill: false,
           stepped: true,
           pointRadius: 0,
+          borderColor: '#3880ff',
+          backgroundColor: '#4c8dff',
         },
       ],
     };
@@ -650,7 +653,6 @@ export class LineCodesPage implements OnInit {
       data,
       options: {
         responsive: true,
-        aspectRatio: 2.5,
         interaction: {
           intersect: false,
           axis: 'x',
@@ -677,61 +679,6 @@ export class LineCodesPage implements OnInit {
       },
     });
   }
-
-  // createChart() {
-  //   if (this.clockChart) {
-  //     this.clockChart.destroy();
-  //   }
-
-  //   const data = {
-  //     labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', '', ''],
-  //     datasets: [
-  //       {
-  //         label: 'Dataset',
-  //         data: [0, 1, 1, 0, 1, 0, 1],
-  //         fill: false,
-  //         stepped: true,
-  //       },
-  //     ],
-  //   };
-
-  //   this.clockChart = new Chart('clockChart', {
-  //     type: 'line',
-  //     data,
-  //     options: {
-  //       responsive: true,
-  //       interaction: {
-  //         intersect: false,
-  //         axis: 'x',
-  //       },
-  //       aspectRatio: 5,
-  //       scales: {
-  //         x: {
-  //           title: {
-  //             display: true,
-  //             text: 'time (s)',
-  //           },
-  //         },
-  //       },
-  //     },
-  //   });
-  //   this.dataChart = new Chart('dataChart', {
-  //     type: 'line',
-  //     data,
-  //     options: {
-  //       responsive: true,
-  //       interaction: {
-  //         intersect: false,
-  //         axis: 'x',
-  //       },
-  //       plugins: {
-  //         title: {
-  //           display: true,
-  //         },
-  //       },
-  //     },
-  //   });
-  // }
 
   // Función que crea un evenly spaced vector.
   linspace(start, stop, num, endpoint = true) {
