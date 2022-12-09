@@ -71,26 +71,19 @@
         <ion-row>
           <ion-col> Hamming bits </ion-col>
         </ion-row>
-        <ion-row class="ion-no-margin ion-no-padding">
+        <ion-row>
           <ion-col class="ion-no-margin ion-no-padding">
-            <ion-row
-              *ngFor="let bit of posHammingBits.reverse(); index as i"
-              class="ion-no-margin ion-no-padding"
-            >
-              <ion-col class="ion-no-margin ion-no-padding">
-                {{ bit }} =
-              </ion-col>
-              <ion-col class="ion-no-margin ion-no-padding ion-text-right">
+            <ion-row *ngFor="let bit of posHammingBits.reverse(); index as i" class="ion-no-margin ion-no-padding">
+              <ion-col> {{ bit }} = </ion-col>
+              <ion-col class="ion-text-right">
                 {{ posHammingBitsBinary[i] }}
               </ion-col>
             </ion-row>
           </ion-col>
         </ion-row>
-        <ion-row class="ion-no-margin ion-no-padding">
-          <ion-col class="ion-no-margin ion-no-padding"> Result </ion-col>
-          <ion-col class="ion-no-margin ion-no-padding ion-text-right">
-            {{ hValue.reverse() }}
-          </ion-col>
+        <ion-row>
+          <ion-col> Result </ion-col>
+          <ion-col class="ion-text-right"> {{ hValue.reverse() }} </ion-col>
         </ion-row>
       </ion-col>
     </ion-row>

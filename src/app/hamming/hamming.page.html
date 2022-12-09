@@ -12,6 +12,18 @@
 <ion-content>
   <ion-grid>
     <ion-row>
+      <ion-col>
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title> What is Hamming code? </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-label> {{ description }} </ion-label>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
       <ion-col *ngFor="let item of pages">
         <ion-card [disabled]="item.disabled">
           <ion-card-header>

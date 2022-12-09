@@ -22,16 +22,24 @@
                 placeholder="Type your message"
                 autoGrow="true"
                 rows="1"
+                (ionChange)="checkIfBinary()"
               >
               </ion-textarea>
             </ion-item>
           </ion-row>
           <ion-row>
             <ion-col>
-              <ion-button [disabled]="!encodingForm.valid">
+              <ion-button
+                [disabled]="!encodingForm.valid"
+                (click)="calculate()"
+              >
                 Calculate
               </ion-button>
-              <ion-button fill="outline" [disabled]="!encodingForm.valid">
+              <ion-button
+                fill="outline"
+                [disabled]="!encodingForm.get('numRandBits').valid"
+                (click)="generateRandomBitStream()"
+              >
                 Generate bit stream
               </ion-button>
               <ion-item>
@@ -63,12 +71,12 @@
                   </ion-select>
                 </ion-item>
                 <ion-item>
-                  <ion-label position="floating"> Last bit sent </ion-label>
+                  <ion-label position="floating"> Last bit state sent </ion-label>
                   <ion-select
-                    placeholder="Select last bit"
+                    placeholder="Select last bit state"
                     formControlName="lastBit"
                   >
-                    <ion-select-option value="0"> 0 </ion-select-option>
+                    <ion-select-option value="-1"> -1 </ion-select-option>
                     <ion-select-option value="1"> 1 </ion-select-option>
                   </ion-select>
                 </ion-item>
@@ -80,8 +88,22 @@
                   </ion-input>
                 </ion-item>
                 <ion-item>
+                  <ion-label position="floating"> Time Unit </ion-label>
+                  <ion-select
+                    placeholder="Select a time unit"
+                    formControlName="timeUnit"
+                  >
+                    <ion-select-option
+                      *ngFor="let item of timeUnits"
+                      [value]="item.value"
+                    >
+                      {{ item.label }}
+                    </ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-item>
                   <ion-label position="floating">
-                    Signal amplitude (V)
+                    Output Signal amplitude (V)
                   </ion-label>
                   <ion-input type="number" formControlName="amplitude">
                   </ion-input>
@@ -92,7 +114,21 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col> </ion-col>
+        <ion-col>
+          <div class="chart-container">
+            <canvas id="clockChart">{{ clockChart }}</canvas>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="chart-container">
+            <canvas id="rawDataChart">{{ rawDataChart }}</canvas>
+          </div>
+        </ion-col>
+        <ion-col>
+          <div class="chart-container">
+            <canvas id="encodedDataChart">{{ encodedDataChart }}</canvas>
+          </div>
+        </ion-col>
       </ion-row>
     </form>
   </ion-grid>

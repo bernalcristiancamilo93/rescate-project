@@ -59,28 +59,22 @@
         </ion-row>
         <ion-row *ngIf="errorPos !== 0">
           <ion-col>
-            <ion-row class="ion-no-margin ion-no-padding">
+            <ion-row>
               <ion-col class="ion-no-margin ion-no-padding">
                 <ion-row
                   *ngFor="let bit of onesRx.reverse(); index as i"
                   class="ion-no-margin ion-no-padding"
                 >
-                  <ion-col class="ion-no-margin ion-no-padding">
-                    {{ bit }} =
-                  </ion-col>
-                  <ion-col class="ion-no-margin ion-no-padding ion-text-right">
+                  <ion-col> {{ bit }} = </ion-col>
+                  <ion-col class="ion-text-right">
                     {{ onesRxBinary[i] }}
                   </ion-col>
                 </ion-row>
               </ion-col>
             </ion-row>
-            <ion-row class="ion-no-margin ion-no-padding">
-              <ion-col class="ion-no-margin ion-no-padding">
-                Error place
-              </ion-col>
-              <ion-col class="ion-no-margin ion-no-padding ion-text-right">
-                {{ errorPosBin }}
-              </ion-col>
+            <ion-row>
+              <ion-col> Error place </ion-col>
+              <ion-col class="ion-text-right"> {{ errorPosBin }} </ion-col>
             </ion-row>
           </ion-col>
         </ion-row>
