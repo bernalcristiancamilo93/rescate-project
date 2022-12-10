@@ -15,6 +15,10 @@ const routes: Routes = [
     loadChildren: () => import('./line-codes/line-codes.module').then( m => m.LineCodesPageModule)
   },
   {
+    path: 'digital-modulation',
+    loadChildren: () => import('./digital-modulation/digital-modulation.module').then( m => m.DigitalModulationPageModule)
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'

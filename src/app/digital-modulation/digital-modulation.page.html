@@ -5,26 +5,25 @@
         <ion-icon name="home-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-title>Line Codes</ion-title>
+    <ion-title>Digital Modulation</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid>
-    <form [formGroup]="encodingForm">
+    <form [formGroup]="modulationForm">
       <ion-row>
         <ion-col>
           <ion-list>
             <ion-item>
-              <ion-label position="floating">
-                Encoding type (scroll for more)
-              </ion-label>
+              <ion-label position="floating"> Modulation type </ion-label>
               <ion-select
-                placeholder="Select encoding"
-                formControlName="encondingType"
+                placeholder="Select modulation scheme"
+                formControlName="modulationType"
+                (ionChange)="checkIfCorrect()"
               >
                 <ion-select-option
-                  *ngFor="let item of encoders"
+                  *ngFor="let item of modulationTypes"
                   [value]="item.value"
                 >
                   {{ item.label }}
@@ -32,28 +31,37 @@
               </ion-select>
             </ion-item>
             <ion-item>
-              <ion-label position="floating"> Last bit state sent </ion-label>
-              <ion-select
-                placeholder="Select last bit state"
-                formControlName="lastBit"
-              >
-                <ion-select-option value="-1"> -1 </ion-select-option>
-                <ion-select-option value="1"> 1 </ion-select-option>
-              </ion-select>
-            </ion-item>
-            <ion-item>
               <ion-label position="floating">
-                Data transmission rate (bps)
+                Symbol transmission rate (Bd)
               </ion-label>
               <ion-input
                 type="number"
-                formControlName="txRate"
+                formControlName="symbolRate"
                 placeholder="Enter a value"
               >
               </ion-input>
             </ion-item>
             <ion-item>
-              <ion-label position="floating"> Plotting time unit </ion-label>
+              <ion-label position="floating">
+                Modulated signal maximum amplitude (V)
+              </ion-label>
+              <ion-input type="number" formControlName="amplitude"> </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">
+                Carrier frequency (Hz)
+              </ion-label>
+              <ion-input
+                type="number"
+                formControlName="carrierFreq"
+                placeholder="Enter a value"
+                [disabled]="!this.modulationForm.get('symbolRate').valid"
+                (ionBlur)="checkFreq()"
+              >
+              </ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating"> Plotting Time Unit </ion-label>
               <ion-select
                 placeholder="Select a time unit"
                 formControlName="timeUnit"
@@ -66,25 +74,21 @@
                 </ion-select-option>
               </ion-select>
             </ion-item>
-            <ion-item>
-              <ion-label position="floating">
-                Output signal amplitude (V)
-              </ion-label>
-              <ion-input type="number" formControlName="amplitude"> </ion-input>
-            </ion-item>
           </ion-list>
         </ion-col>
         <ion-col>
           <ion-row>
             <ion-col>
               <ion-item>
-                <ion-label position="floating"> Bits stream </ion-label>
+                <ion-label position="floating"> Bit frame </ion-label>
                 <ion-textarea
-                  formControlName="bitStream"
+                  formControlName="bitFrame"
                   placeholder="Type your message"
                   autoGrow="true"
                   rows="1"
+                  [disabled]="!this.modulationForm.get('modulationType').valid"
                   (ionChange)="checkIfBinary()"
+                  (ionBlur)="checkIfCorrect()"
                 >
                 </ion-textarea>
               </ion-item>
@@ -94,20 +98,21 @@
             <ion-col>
               <ion-button
                 fill="outline"
-                [disabled]="!encodingForm.get('numRandBits').valid"
-                (click)="generateRandomBitStream()"
+                [disabled]="!modulationForm.get('numraRandSymbols').valid ||
+                  !modulationForm.get('modulationType').valid"
+                (click)="generateRandomBitFrame()"
               >
-                Generate random bit stream
+                Generate random symbol
               </ion-button>
             </ion-col>
             <ion-col>
               <ion-item>
                 <ion-label position="floating">
-                  Number of random bits
+                  Number of random symbols
                 </ion-label>
                 <ion-input
                   type="number"
-                  formControlName="numRandBits"
+                  formControlName="numraRandSymbols"
                   placeholder="Enter a value"
                 >
                 </ion-input>
@@ -118,31 +123,22 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-button [disabled]="!encodingForm.valid" (click)="calculate()">
+          <ion-button [disabled]="!modulationForm.valid" (click)="calculate()">
             Calculate
           </ion-button>
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col size="10" offset="1">
-          <ion-row>
-            <ion-col>
-              <div class="chart-container">
-                <canvas id="clockChart">{{ clockChart }}</canvas>
-              </div>
-            </ion-col>
-            <ion-col>
-              <div class="chart-container">
-                <canvas id="rawDataChart">{{ rawDataChart }}</canvas>
-              </div>
-            </ion-col>
-            <ion-col>
-              <div class="chart-container">
-                <canvas id="encodedDataChart">{{ encodedDataChart }}</canvas>
-              </div>
-            </ion-col>
-          </ion-row>
-        </ion-col>
+        <ion-col> </ion-col>
+        <ion-col> </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col> </ion-col>
+        <ion-col> </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col> </ion-col>
+        <ion-col> </ion-col>
       </ion-row>
     </form>
   </ion-grid>

@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class HomePage {
   public pages = [
     {
-      title: 'Line Coding',
+      title: 'Line encoding',
       description: `A line code is the code used for data transmission of a
         digital signal over a transmission line. This process of coding is
         chosen so as to avoid overlap and distortion of signal such as
@@ -17,7 +17,7 @@ export class HomePage {
       url: ['/', 'line-codes'],
     },
     {
-      title: 'Channel coding',
+      title: 'Channel encoding',
       description: `The strategy of a channel encoder is to add redundancy to
         the transmitted signal, so that errors caused by noise during
         transmission can be corrected at the receiver. The process of encoding
@@ -29,26 +29,37 @@ export class HomePage {
       url: ['/', 'hamming'],
     },
     {
-      title: 'Conformación banda base',
-      description: ``,
+      title: 'Baseband ',
+      description: `The baseband is the range of frequencies occupied by a
+        signal that has not been modulated to higher frequencies.`,
       disabled: false,
       url: ['/'],
     },
     {
-      title: 'Modulación digital',
-      description: ``,
+      title: 'Digital modulation',
+      description: `Digital modulation is the process of encoding a digital
+        information signal into the amplitude, phase, or frequency of the
+        transmitted signal.`,
+      disabled: false,
+      url: ['/', 'digital-modulation'],
+    },
+    {
+      title: 'OFMD multiplexing',
+      description: `Orthogonal frequency-division multiplexing (OFDM) is a type
+        of digital transmission and a method of encoding digital data on
+        multiple carrier frequencies. OFDM has developed into a popular scheme
+        for wideband digital communication, used in applications such as
+        digital television and audio broadcasting, DSL internet access,
+        wireless networks, power line networks, and 4G/5G mobile
+        communications.`,
       disabled: false,
       url: ['/'],
     },
     {
-      title: 'Multiplexación: OFMD',
-      description: ``,
-      disabled: false,
-      url: ['/'],
-    },
-    {
-      title: 'Esquemas de acceso múltiple',
-      description: ``,
+      title: 'Multiple access schemes',
+      description: `Multiple access schemes are used whenever there is a need
+        for a number of independent users to share a resource that may be
+        scarce or expensive.`,
       disabled: false,
       url: ['/'],
     },
