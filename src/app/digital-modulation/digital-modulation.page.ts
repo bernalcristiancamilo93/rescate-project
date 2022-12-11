@@ -442,7 +442,8 @@ export class DigitalModulationPage implements OnInit {
 
   createTruthTables(vectorQ, vectorI) {
     this.isTableReady = true;
-    this.numModulationType = 2 ** this.bitsPerSymbol();
+    const bitsPerSymbol = this.bitsPerSymbol();
+    this.numModulationType = 2 ** bitsPerSymbol;
 
     this.bitsQTruthTable = [];
     this.bitsITruthTable = [];
@@ -450,22 +451,24 @@ export class DigitalModulationPage implements OnInit {
     this.outAmplitudeI = [];
     this.outTable = [];
 
-    for (let i = 0; i < this.bitsPerSymbol() / 2; i++) {
-      this.bitsQTruthTable.push(`Q${this.bitsPerSymbol() / 2 - i} `);
-      this.bitsITruthTable.push(`I${this.bitsPerSymbol() / 2 - i} `);
+    for (let i = 0; i < bitsPerSymbol / 2; i++) {
+      this.bitsQTruthTable.push(`Q${bitsPerSymbol / 2 - i} `);
+      this.bitsITruthTable.push(`I${bitsPerSymbol / 2 - i} `);
     }
 
-    for (let i = 0; i < 2 ** (this.bitsPerSymbol() / 2); i++) {
+    for (let i = 0; i < 2 ** (bitsPerSymbol / 2); i++) {
       this.outAmplitudeQ[i] = [i.toString(2), vectorQ[i].toFixed(4)];
       this.outAmplitudeI[i] = [i.toString(2), vectorI[i].toFixed(4)];
     }
 
+    let contador = 0;
     for (const [i, valueQ] of vectorQ.entries()) {
       for (const [j, valueI] of vectorI.entries()) {
-        const index = (j + i * this.bitsPerSymbol()).toString(2);
+        const index = (contador).toString(2);
         const magnitude = Math.sqrt(valueQ ** 2 + valueI ** 2).toFixed(4);
         const angle = ((Math.atan2(valueQ, valueI) * 180) / Math.PI).toFixed(4);
         this.outTable.push([index, magnitude, angle]);
+        contador++;
       }
     }
   }
