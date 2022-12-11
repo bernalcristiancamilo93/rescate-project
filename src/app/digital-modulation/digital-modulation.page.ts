@@ -78,7 +78,7 @@ export class DigitalModulationPage implements OnInit {
         Validators.min(1),
       ]),
       timeUnit: new FormControl(1e3, Validators.required),
-      numraRandSymbols: new FormControl(2, [
+      numraRandSymbols: new FormControl(4, [
         Validators.required,
         Validators.min(1),
       ]),
@@ -97,7 +97,6 @@ export class DigitalModulationPage implements OnInit {
       this.getRawMessage(),
       this.bitsPerSymbol()
     );
-    // console.log('symbolsVector', symbolsVector);
 
     // Separa en Q e I cada símbolo del vector total.
     const qiVector = [];
@@ -106,15 +105,12 @@ export class DigitalModulationPage implements OnInit {
       const iVector = item.slice(item.length / 2, item.length + 1);
       qiVector.push([qVector, iVector]);
     }
-    // console.log('qiVector', qiVector);
 
     // Crea la tabla de amplitudes con la que se hará la multiplexación. Se
     // calcula teniendo en cuenta la amplitud mínima unitaria calculada.
     const maxAmplitude = this.modulationForm.get('amplitude').value;
     const unitValue =
       (maxAmplitude * Math.SQRT1_2) / (2 ** (bitsPerSymbol / 2) - 1);
-
-    // console.log(unitValue);
 
     const amplitudesVectorQ = [];
     const amplitudesVectorI = [];
@@ -124,24 +120,73 @@ export class DigitalModulationPage implements OnInit {
       amplitudesVectorQ.push(unitValue * (datosTotales - (1 + 2 * i)));
       amplitudesVectorI.push(unitValue * (1 + 2 * i - datosTotales));
     }
-    console.log(amplitudesVectorQ);
-    // console.log(amplitudesVectorI);
+
+    // Crea el vector de señales seno y coseno con las cuales se hará la
+    // multiplexación.
+    const stopTime =
+      this.modulationForm.get('timeUnit').value /
+      this.modulationForm.get('symbolRate').value;
+    const carrierFreq = this.modulationForm.get('carrierFreq').value;
+    const numMuestrasPorSymbol =
+      100 * (carrierFreq / this.modulationForm.get('symbolRate').value);
+
+    const vectorTiempo = this.linspace(
+      0,
+      stopTime,
+      numMuestrasPorSymbol,
+      false
+    );
+    const vectorSeno = [];
+    const vectorCoseno = [];
+
+    for (let i = 0; i < numMuestrasPorSymbol; i++) {
+      vectorSeno.push(
+        Math.sin(
+          2 *
+            Math.PI *
+            carrierFreq *
+            (vectorTiempo[i] / this.modulationForm.get('timeUnit').value)
+        )
+      );
+      vectorCoseno.push(
+        Math.sin(
+          2 *
+            Math.PI *
+            carrierFreq *
+            (vectorTiempo[i] / this.modulationForm.get('timeUnit').value) +
+            Math.PI / 2
+        )
+      );
+    }
 
     // Multiplexa cada Q e I y retorna un vector con el valor de las amplitudes
     // correspondientes.
     const multiplexVector = [];
     for (const item of qiVector) {
       // Halla el valor decimal de lo contenido en Q e I.
-      const qAmplitude =
-        amplitudesVectorQ[parseInt(item[0].toString().replace(/,/g, ''), 2)];
-      const iAmplitude =
-        amplitudesVectorI[parseInt(item[1].toString().replace(/,/g, ''), 2)];
+      const qAmplitude = amplitudesVectorQ[parseInt(item[0].join(''), 2)];
+      const iAmplitude = amplitudesVectorI[parseInt(item[1].join(''), 2)];
       multiplexVector.push([qAmplitude, iAmplitude]);
     }
-    console.log('multiplexVector', multiplexVector);
+
+    const vectorSuma = [];
+    for (const item of multiplexVector) {
+      const nuevoCoseno = vectorCoseno.map((value) => value * item[0]);
+      const nuevoSeno = vectorSeno.map((value) => value * item[1]);
+
+      vectorSuma.push(nuevoCoseno.map((value, i) => value + nuevoSeno[i]));
+    }
+
+    let vectorTotal = [];
+    for (const item of vectorSuma) {
+      vectorTotal = vectorTotal.concat(item);
+    }
+
+    this.createSineWaveChart(vectorTotal);
   }
 
-  // Toma un array de bits y lo descompone en vectores más pequeño del tamaño pedido
+  // Toma un array de bits y lo descompone en vectores más pequeño del tamaño
+  // pedido.
   formatInput(message: string, numBits: number) {
     const messageVector = message.split('');
     const result = [];
@@ -197,8 +242,8 @@ export class DigitalModulationPage implements OnInit {
       this.alertCtrl
         .create({
           header: 'Invalid bit amount on Message!',
-          message: `Your message must contain at least ${bits} bits or a multiple of it. Your
-            message will be errased!`,
+          message: `Your message must contain at least ${bits} bits or a
+            multiple of it. Your message will be errased!`,
           buttons: ['Okay'],
         })
         .then((alertElement) => {
@@ -222,8 +267,8 @@ export class DigitalModulationPage implements OnInit {
     ).numBits;
   }
 
-  // Creación del vector con símbolos random. El vector de resultado lo formatea
-  // para luego ponerlo en el BitFrame.
+  // Creación del vector con símbolos random. El vector de resultado lo
+  // formatea para luego ponerlo en el BitFrame.
   generateRandomBitFrame() {
     const numSymbols = this.modulationForm.get('numraRandSymbols').value;
 
@@ -249,8 +294,8 @@ export class DigitalModulationPage implements OnInit {
       this.alertCtrl
         .create({
           header: 'Invalid carrier frequency!',
-          message: `The carrier frequency must be al least twice the baud rate. Your
-          message will be errased!`,
+          message: `The carrier frequency must be al least twice the baud rate.
+           Your message will be errased!`,
           buttons: ['Okay'],
         })
         .then((alertElement) => {
@@ -262,5 +307,74 @@ export class DigitalModulationPage implements OnInit {
             );
         });
     }
+  }
+
+  // Crea la gráfica de los datos modulados en tiempo.
+  createSineWaveChart(vectorIn) {
+    if (this.sineWaveChart) {
+      this.sineWaveChart.destroy();
+    }
+
+    vectorIn.push(vectorIn.slice(-1)[0]);
+
+    const numSymbols =
+      this.modulationForm.get('bitFrame').value.length / this.bitsPerSymbol();
+
+    const stopTime =
+      (this.modulationForm.get('timeUnit').value /
+        this.modulationForm.get('symbolRate').value) *
+      numSymbols;
+    const carrierFreq = this.modulationForm.get('carrierFreq').value;
+    const numMuestras =
+      100 *
+        (carrierFreq / this.modulationForm.get('symbolRate').value) *
+        numSymbols +
+      1;
+    const arraytTiempo = this.linspace(0, stopTime, numMuestras, true);
+
+    // Data de la gráfica
+    const data = {
+      labels: arraytTiempo,
+      datasets: [
+        {
+          label: 'Modulated Signal',
+          data: vectorIn,
+          fill: false,
+          pointRadius: 0,
+          borderColor: '#3880ff',
+          backgroundColor: '#4c8dff',
+        },
+      ],
+    };
+    this.sineWaveChart = new Chart('sineWaveChart', {
+      type: 'line',
+      data,
+      options: {
+        responsive: true,
+        interaction: {
+          intersect: false,
+          axis: 'x',
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: `Time (${
+                this.timeUnits.find(
+                  ({ value }) =>
+                    value === this.modulationForm.get('timeUnit').value
+                ).text
+              })`,
+            },
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Amplitude (V)',
+            },
+          },
+        },
+      },
+    });
   }
 }

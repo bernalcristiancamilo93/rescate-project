@@ -38,6 +38,7 @@
                 type="number"
                 formControlName="symbolRate"
                 placeholder="Enter a value"
+                (ionBlur)="checkFreq()"
               >
               </ion-input>
             </ion-item>
@@ -129,8 +130,11 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col> </ion-col>
-        <ion-col> </ion-col>
+        <ion-col size="10" offset="1">
+          <div class="chart-container">
+            <canvas id="sineWaveChart">{{ sineWaveChart }}</canvas>
+          </div>
+        </ion-col>
       </ion-row>
       <ion-row>
         <ion-col> </ion-col>
