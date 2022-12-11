@@ -137,12 +137,120 @@
         </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col> </ion-col>
-        <ion-col> </ion-col>
+        <ion-col size="10" offset="1">
+          <ion-row>
+            <ion-col>
+              <div class="chart-container">
+                <canvas id="phasorChart">{{ phasorChart }}</canvas>
+              </div>
+            </ion-col>
+            <ion-col>
+              <ion-grid
+                class="ion-text-center truth-table"
+                *ngIf="isTableReady"
+              >
+                <ion-row class="ion-margin">
+                  <ion-col>
+                    <ion-title>
+                      <ion-text class="ion-text-wrap">
+                        ADC Converter Truth Table
+                      </ion-text>
+                    </ion-title>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col class="ion-margin">
+                    <ion-row>
+                      <ion-col>
+                        <ion-text> {{ bitsQTruthTable.join('') }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> Output (V) </ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngFor="let item of outAmplitudeQ">
+                      <ion-col>
+                        <ion-text> {{ item[0] }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> {{ item[1] }} </ion-text>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                  <ion-col class="ion-margin">
+                    <ion-row>
+                      <ion-col>
+                        <ion-text> {{ bitsITruthTable.join('') }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> Output (V) </ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngFor="let item of outAmplitudeI">
+                      <ion-col>
+                        <ion-text> {{ item[0] }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> {{ item[1] }} </ion-text>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-col>
       </ion-row>
       <ion-row>
-        <ion-col> </ion-col>
-        <ion-col> </ion-col>
+        <ion-col size="10" offset="1">
+          <ion-row>
+            <ion-col>
+              <ion-grid
+                class="ion-text-center truth-table"
+                *ngIf="isTableReady"
+              >
+                <ion-row class="ion-margin">
+                  <ion-col>
+                    <ion-title>
+                      <ion-text class="ion-text-wrap">
+                        Output Table {{ numModulationType }} QAM
+                      </ion-text>
+                    </ion-title>
+                  </ion-col>
+                </ion-row>
+                <ion-row>
+                  <ion-col class="ion-margin">
+                    <ion-row>
+                      <ion-col>
+                        <ion-text>
+                          {{ bitsQTruthTable.join('') }} {{
+                          bitsITruthTable.join('') }}
+                        </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> Out Amplitude (V) </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> Out Phase (°) </ion-text>
+                      </ion-col>
+                    </ion-row>
+                    <ion-row *ngFor="let item of outTable">
+                      <ion-col>
+                        <ion-text> {{ item[0] }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> {{ item[1] }} </ion-text>
+                      </ion-col>
+                      <ion-col>
+                        <ion-text> {{ item[2] }} </ion-text>
+                      </ion-col>
+                    </ion-row>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-col>
+          </ion-row>
+        </ion-col>
       </ion-row>
     </form>
   </ion-grid>

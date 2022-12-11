@@ -14,6 +14,18 @@ export class DigitalModulationPage implements OnInit {
 
   // Chart element
   public sineWaveChart: any;
+  public phasorChart: any;
+
+  // Values on screen
+  public bitsQTruthTable = [];
+  public bitsITruthTable = [];
+  public outAmplitudeQ = [];
+  public outAmplitudeI = [];
+  public outTable = [];
+  public numModulationType = 0;
+
+  // Flags
+  public isTableReady = false;
 
   // Selector de datos
   public modulationTypes = [
@@ -121,6 +133,9 @@ export class DigitalModulationPage implements OnInit {
       amplitudesVectorI.push(unitValue * (1 + 2 * i - datosTotales));
     }
 
+    // Crea las tablas de verdad para el conversor ADC y de la salida.
+    this.createTruthTables(amplitudesVectorQ, amplitudesVectorI);
+
     // Crea el vector de señales seno y coseno con las cuales se hará la
     // multiplexación.
     const stopTime =
@@ -183,6 +198,7 @@ export class DigitalModulationPage implements OnInit {
     }
 
     this.createSineWaveChart(vectorTotal);
+    this.createPhasorChart(multiplexVector);
   }
 
   // Toma un array de bits y lo descompone en vectores más pequeño del tamaño
@@ -376,5 +392,81 @@ export class DigitalModulationPage implements OnInit {
         },
       },
     });
+  }
+
+  createPhasorChart(dataVector) {
+    if (this.phasorChart) {
+      this.phasorChart.destroy();
+    }
+
+    dataVector = dataVector.map((item) => item.reverse());
+
+    this.phasorChart = new Chart('phasorChart', {
+      type: 'scatter',
+      data: {
+        datasets: [
+          {
+            label: 'Phasor Chart',
+            data: dataVector,
+            borderColor: '#3880ff',
+            backgroundColor: '#4c8dff',
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        interaction: {
+          intersect: false,
+          axis: 'x',
+        },
+        scales: {
+          x: {
+            type: 'linear',
+            title: {
+              display: true,
+              text: 'I',
+            },
+          },
+          y: {
+            type: 'linear',
+            title: {
+              display: true,
+              text: 'Q',
+            },
+          },
+        },
+        aspectRatio: 1,
+      },
+    });
+  }
+
+  createTruthTables(vectorQ, vectorI) {
+    this.isTableReady = true;
+    this.numModulationType = 2 ** this.bitsPerSymbol();
+
+    this.bitsQTruthTable = [];
+    this.bitsITruthTable = [];
+    this.outAmplitudeQ = [];
+    this.outAmplitudeI = [];
+    this.outTable = [];
+
+    for (let i = 0; i < this.bitsPerSymbol() / 2; i++) {
+      this.bitsQTruthTable.push(`Q${this.bitsPerSymbol() / 2 - i} `);
+      this.bitsITruthTable.push(`I${this.bitsPerSymbol() / 2 - i} `);
+    }
+
+    for (let i = 0; i < 2 ** (this.bitsPerSymbol() / 2); i++) {
+      this.outAmplitudeQ[i] = [i.toString(2), vectorQ[i].toFixed(4)];
+      this.outAmplitudeI[i] = [i.toString(2), vectorI[i].toFixed(4)];
+    }
+
+    for (const [i, valueQ] of vectorQ.entries()) {
+      for (const [j, valueI] of vectorI.entries()) {
+        const index = (j + i * this.bitsPerSymbol()).toString(2);
+        const magnitude = Math.sqrt(valueQ ** 2 + valueI ** 2).toFixed(4);
+        const angle = ((Math.atan2(valueQ, valueI) * 180) / Math.PI).toFixed(4);
+        this.outTable.push([index, magnitude, angle]);
+      }
+    }
   }
 }
