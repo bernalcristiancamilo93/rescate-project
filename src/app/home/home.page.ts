@@ -32,7 +32,7 @@ export class HomePage {
       title: 'Baseband ',
       description: `The baseband is the range of frequencies occupied by a
         signal that has not been modulated to higher frequencies.`,
-      disabled: false,
+      disabled: true,
       url: ['/'],
     },
     {
@@ -52,7 +52,7 @@ export class HomePage {
         digital television and audio broadcasting, DSL internet access,
         wireless networks, power line networks, and 4G/5G mobile
         communications.`,
-      disabled: false,
+      disabled: true,
       url: ['/'],
     },
     {
@@ -60,7 +60,7 @@ export class HomePage {
       description: `Multiple access schemes are used whenever there is a need
         for a number of independent users to share a resource that may be
         scarce or expensive.`,
-      disabled: false,
+      disabled: true,
       url: ['/'],
     },
   ];

@@ -466,7 +466,7 @@ export class DigitalModulationPage implements OnInit {
       for (const valueI of vectorI) {
         const index = contador.toString(2);
         const magnitude = Math.sqrt(valueQ ** 2 + valueI ** 2).toFixed(4);
-        const angle = ((Math.atan2(valueQ, valueI) * 180) / Math.PI).toFixed(4);
+        const angle = ((Math.atan2(valueQ, valueI) * 180) / Math.PI).toFixed(2);
         this.outTable.push([index, magnitude, angle]);
         contador++;
       }
