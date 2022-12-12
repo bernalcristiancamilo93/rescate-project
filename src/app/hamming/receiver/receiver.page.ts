@@ -101,10 +101,7 @@ export class ReceiverPage implements OnInit {
           }
           this.onesRxBinary.reverse();
 
-          this.errorPosBin = (this.errorPos >>> 0)
-            .toString(2)
-            .split('')
-            .reverse();
+          this.errorPosBin = (this.errorPos >>> 0).toString(2).split('');
 
           this.isHammingRxCalculated = true;
         });
